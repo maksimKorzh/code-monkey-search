@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div class="col">
+    
+    
+    <div class="col mt-5">
+      <img src="{{url_for('static', filename='./images/logo.jpeg')}}" class="mx-auto d-block" style="width: 25%; height: 25%">
+    </div>    
+    
+    
+    <form class="mt-5" name="search" action="/search_results">
+      <div class="col-6 mx-auto input-group">
+        <input type="text" class="form-control" name="search" placeholder="search...">
+        <button type="submit" class="btn btn-success">Search</button>
+      </div>
+    </form>    
+  </div>
+{% endblock %}

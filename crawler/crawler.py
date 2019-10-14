@@ -54,8 +54,16 @@ class Crawler():
             'description': description
         }
         
+        search_results = self.db.search_results
+        search_results.insert_one(result)
+        search_results.create_index([
+            ('url', pymongo.TEXT),
+            ('title', pymongo.TEXT),
+            ('description', pymongo.TEXT)
+        ], name='search_results', default_language='english')
+        
         # store the result
-        self.search_results.append(result)
+        #self.search_results.append(result)
         
         # return when depth is exhausted
         if depth == 0:
@@ -75,33 +83,13 @@ class Crawler():
             # ignore internal links
             except KeyError:
                 pass
-
-    # write search results to mongodb
-    def insert_results(self):
-        # insert data to mongodb
-        search_results = self.db.search_results
-        search_results.insert_many(self.search_results)
-        search_results.create_index([
-            ('url', pymongo.TEXT),
-            ('title', pymongo.TEXT),
-            ('description', pymongo.TEXT)
-        ], name='search_results', default_language='english')
-
-    def print_data(self):
-        # loop over data list
-        for entry in self.search_results:
-            print(json.dumps(entry))
-
-        print('\nNumber of entries scraped: %d' % len(self.search_results))
         
-        print(self.db.command('db.search_results.find( { $text: { $search: "Welcome" } } )'))
+        # close connection
+        client.close()
 
 
 crawler = Crawler()
-
-#crawler.crawl('http://quotes.toscrape.com', 1)
-#crawler.insert_results()
-crawler.print_data()
+crawler.crawl('https://www.stackoverflow.com', 5)
 
 
 
